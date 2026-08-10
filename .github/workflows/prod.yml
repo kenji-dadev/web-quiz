@@ -20,11 +20,23 @@ jobs:
           NODE_ENV=production
           EOF
 
+      - name: Detect Docker Compose command
+        id: dc
+        run: |
+          if docker compose version > /dev/null 2>&1; then
+            echo "cmd=docker compose" >> "$GITHUB_OUTPUT"
+          elif docker-compose version > /dev/null 2>&1; then
+            echo "cmd=docker-compose" >> "$GITHUB_OUTPUT"
+          else
+            echo "❌ Neither 'docker compose' nor 'docker-compose' found!"
+            exit 1
+          fi
+
       - name: Build and start containers
         run: |
-          docker compose -f docker-compose.prod.yml down --remove-orphans || true
-          docker compose -f docker-compose.prod.yml build --no-cache
-          docker compose -f docker-compose.prod.yml up -d
+          ${{ steps.dc.outputs.cmd }} -f docker-compose.prod.yml down --remove-orphans || true
+          ${{ steps.dc.outputs.cmd }} -f docker-compose.prod.yml build --no-cache
+          ${{ steps.dc.outputs.cmd }} -f docker-compose.prod.yml up -d
 
       - name: Prune old Docker images
         run: docker image prune -f
