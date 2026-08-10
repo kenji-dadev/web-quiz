@@ -1,0 +1,17 @@
+services:
+  web-quiz:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: web-quiz
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.production
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

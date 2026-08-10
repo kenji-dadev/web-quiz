@@ -1,0 +1,45 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          cat <<EOF > .env.production
+          NODE_ENV=production
+          EOF
+
+      - name: Build and start containers
+        run: |
+          docker compose -f docker-compose.prod.yml down --remove-orphans || true
+          docker compose -f docker-compose.prod.yml build --no-cache
+          docker compose -f docker-compose.prod.yml up -d
+
+      - name: Prune old Docker images
+        run: docker image prune -f
+
+      - name: Health check
+        run: |
+          echo "Waiting for app to start..."
+          sleep 5
+          for i in $(seq 1 10); do
+            if curl -sf http://localhost:3000 > /dev/null 2>&1; then
+              echo "✅ App is healthy!"
+              exit 0
+            fi
+            echo "Attempt $i/10 - waiting..."
+            sleep 3
+          done
+          echo "❌ Health check failed"
+          exit 1
