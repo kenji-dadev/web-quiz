@@ -1,8 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Use standalone output for Docker builds, but not on Vercel
-  ...(process.env.VERCEL ? {} : { output: "standalone" as const }),
+  output: "export",
+  basePath: "/web-quiz",
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;
