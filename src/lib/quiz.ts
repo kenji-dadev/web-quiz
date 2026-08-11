@@ -34,10 +34,20 @@ export function generateChoices(
 export function generateQuiz(
   words: Word[],
   size: number,
-  mode: QuizMode
+  mode: QuizMode,
+  priorityWords: string[] = []
 ): QuizQuestion[] {
   const actualSize = Math.min(size, words.length);
-  const selectedWords = shuffleArray(words).slice(0, actualSize);
+  const prioritySet = new Set(priorityWords);
+  const priorityPool = words.filter((word) => prioritySet.has(word.word));
+  const otherPool = words.filter((word) => !prioritySet.has(word.word));
+
+  const selectedPriority = shuffleArray(priorityPool).slice(0, actualSize);
+  const remaining = actualSize - selectedPriority.length;
+  const selectedOthers =
+    remaining > 0 ? shuffleArray(otherPool).slice(0, remaining) : [];
+
+  const selectedWords = shuffleArray([...selectedPriority, ...selectedOthers]);
 
   return selectedWords.map((word) => ({
     word,

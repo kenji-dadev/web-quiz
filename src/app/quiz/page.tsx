@@ -6,6 +6,7 @@ import wordsData from "@/data/words.json";
 import QuizCard from "@/components/QuizCard";
 import QuizResult from "@/components/QuizResult";
 import { calculateScore, checkAnswer, generateQuiz } from "@/lib/quiz";
+import { getReviewWords, updateReviewWords } from "@/lib/reviewWords";
 import type { QuizMode, QuizQuestion, Word, WrongAnswer } from "@/types/word";
 
 const VALID_MODES: QuizMode[] = ["en-to-th", "th-to-en"];
@@ -47,13 +48,17 @@ export default function QuizPage() {
   const [quizFinished, setQuizFinished] = useState(false);
 
   useEffect(() => {
-    setQuizQuestions(generateQuiz(words, requestedSize, quizMode));
+    setQuizQuestions(
+      generateQuiz(words, requestedSize, quizMode, getReviewWords())
+    );
   }, [words, requestedSize, quizMode, retryCount]);
 
   if (quizQuestions === null) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-4 py-12">
-        <p className="text-lg font-medium text-slate-600">Preparing quiz...</p>
+      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-3 py-6 sm:px-6 sm:py-10 md:px-8 md:py-12">
+        <p className="text-base font-medium text-slate-600 sm:text-lg">
+          Preparing quiz...
+        </p>
       </div>
     );
   }
@@ -89,6 +94,12 @@ export default function QuizPage() {
 
   function handleNextQuestion() {
     if (currentQuestion >= totalQuestions - 1) {
+      if (quizQuestions) {
+        updateReviewWords({
+          quizWords: quizQuestions.map((question) => question.word.word),
+          wrongWords: wrongAnswers.map((item) => item.word),
+        });
+      }
       setQuizFinished(true);
       return;
     }
@@ -110,17 +121,19 @@ export default function QuizPage() {
 
   if (totalQuestions === 0) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-4 py-12">
-        <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-          <h1 className="text-2xl font-bold text-slate-900">No words available</h1>
-          <p className="mt-3 text-slate-600">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-3 py-6 sm:px-6 sm:py-10 md:px-8 md:py-12">
+        <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm sm:p-6 md:p-8">
+          <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">
+            No words available
+          </h1>
+          <p className="mt-3 text-sm text-slate-600 sm:text-base">
             Add vocabulary to{" "}
             <code className="text-sm">src/data/words.json</code> to start a quiz.
           </p>
           <button
             type="button"
             onClick={() => router.push("/")}
-            className="mt-6 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
+            className="mt-6 min-h-11 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
           >
             Back to Home
           </button>
@@ -131,7 +144,7 @@ export default function QuizPage() {
 
   if (quizFinished) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-4 py-12">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-3 py-6 sm:px-6 sm:py-10 md:px-8 md:py-12">
         <QuizResult
           score={calculateScore(totalQuestions, wrongAnswers.length)}
           totalQuestions={totalQuestions}
@@ -147,7 +160,7 @@ export default function QuizPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-4 py-12">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-3 py-6 sm:px-6 sm:py-10 md:px-8 md:py-12">
       <QuizCard
         question={activeQuestion}
         currentIndex={currentQuestion}
