@@ -48,6 +48,7 @@ export function updateReviewWords({
     }
   }
 
+  
   const next = [...existing];
 
   if (canUseStorage()) {
