@@ -52,7 +52,7 @@ export default function QuizPage() {
 
   if (quizQuestions === null) {
     return (
-      <div className="flex min-h-full flex-col items-center justify-center px-4 py-12">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-4 py-12">
         <p className="text-lg font-medium text-slate-600">Preparing quiz...</p>
       </div>
     );
@@ -81,6 +81,7 @@ export default function QuizPage() {
       ...prev,
       {
         word: activeQuestion.word.word,
+        pos: activeQuestion.word.pos,
         meaning: activeQuestion.word.meaning,
       },
     ]);
@@ -109,7 +110,7 @@ export default function QuizPage() {
 
   if (totalQuestions === 0) {
     return (
-      <div className="flex min-h-full flex-col items-center justify-center px-4 py-12">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-4 py-12">
         <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
           <h1 className="text-2xl font-bold text-slate-900">No words available</h1>
           <p className="mt-3 text-slate-600">
@@ -130,7 +131,7 @@ export default function QuizPage() {
 
   if (quizFinished) {
     return (
-      <div className="flex min-h-full flex-col items-center justify-center px-4 py-12">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-4 py-12">
         <QuizResult
           score={calculateScore(totalQuestions, wrongAnswers.length)}
           totalQuestions={totalQuestions}
@@ -146,7 +147,7 @@ export default function QuizPage() {
   }
 
   return (
-    <div className="flex min-h-full flex-col items-center justify-center px-4 py-12">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-4 py-12">
       <QuizCard
         question={activeQuestion}
         currentIndex={currentQuestion}

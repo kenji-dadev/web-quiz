@@ -7,19 +7,9 @@ export default function Home() {
   const words = wordsData as Word[];
 
   return (
-    <div className="flex min-h-full flex-col items-center justify-center bg-slate-100 px-4 py-12">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-4 py-12">
       <main className="flex w-full max-w-2xl flex-col items-center">
         <div className="mb-8 text-center">
-          <div className="mb-4 flex justify-center">
-            <Image
-              src="/two.png"
-              alt="Quiz mascot"
-              width={80}
-              height={80}
-              priority
-              className="drop-shadow-md transition-transform duration-300 hover:scale-110"
-            />
-          </div>
           <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
             English Vocabulary Quiz
           </h1>

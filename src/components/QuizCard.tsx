@@ -46,9 +46,16 @@ export default function QuizCard({
         answeredCount={answeredCount}
       />
 
-      <h2 className="mb-8 text-2xl font-semibold leading-snug text-slate-900 sm:text-3xl">
-        {getQuestionText(question)}
-      </h2>
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold leading-snug text-slate-900 sm:text-3xl">
+          {getQuestionText(question)}
+        </h2>
+        {question.word.pos ? (
+          <span className="mt-3 inline-flex rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold tracking-wide text-slate-600">
+            {question.word.pos}
+          </span>
+        ) : null}
+      </div>
 
       <div className="space-y-3">
         {question.choices.map((choice, index) => {

@@ -1,5 +1,6 @@
 export type Word = {
   word: string;
+  pos: string;
   meaning: string;
 };
 
@@ -14,5 +15,6 @@ export type QuizQuestion = {
 
 export type WrongAnswer = {
   word: string;
+  pos: string;
   meaning: string;
 };

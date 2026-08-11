@@ -63,10 +63,17 @@ export function calculateScore(
 
 export function getQuestionText(question: QuizQuestion): string {
   if (question.mode === "en-to-th") {
-    return `What does "${question.word.word}" mean?`;
+    return question.word.word;
   }
 
-  return `What is the English word for "${question.word.meaning}"?`;
+  return question.word.meaning;
+}
+
+export function getQuestionSubtext(question: QuizQuestion): string {
+  if (question.mode === "en-to-th") {
+    return "What does this word mean?";
+  }
+  return "What is the English word?";
 }
 
 export function getCorrectAnswerLabel(question: QuizQuestion): string {

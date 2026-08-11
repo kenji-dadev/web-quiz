@@ -50,7 +50,14 @@ export default function QuizResult({
                 key={item.word}
                 className="text-base text-slate-700"
               >
-                {item.word} → {item.meaning}
+                <span className="font-medium text-slate-900">{item.word}</span>
+                {item.pos ? (
+                  <span className="ml-2 text-xs font-semibold text-slate-500">
+                    ({item.pos})
+                  </span>
+                ) : null}
+                <span className="text-slate-500"> → </span>
+                {item.meaning}
               </li>
             ))}
           </ul>
