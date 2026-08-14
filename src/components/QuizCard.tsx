@@ -2,6 +2,7 @@
 
 import type { QuizQuestion } from "@/types/word";
 import { getCorrectAnswerLabel, getQuestionText } from "@/lib/quiz";
+import { useSpeak } from "@/hooks/useSpeak";
 import QuizOption from "./QuizOption";
 import QuizProgress from "./QuizProgress";
 
@@ -32,10 +33,16 @@ export default function QuizCard({
   onNextQuestion,
   isLastQuestion,
 }: QuizCardProps) {
+  const { speak, isSupported, speakingText } = useSpeak();
+
   const isCorrect =
     showResult &&
     selectedAnswer !== null &&
     selectedAnswer === question.correctAnswer;
+
+  const questionText = getQuestionText(question);
+  const questionLang = question.mode === "en-to-th" ? "en-US" : "th-TH";
+  const choiceLang = question.mode === "en-to-th" ? "th-TH" : "en-US";
 
   return (
     <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:max-w-2xl sm:p-6 md:p-8">
@@ -47,13 +54,34 @@ export default function QuizCard({
       />
 
       <div className="mb-5 sm:mb-8">
-        <h2 className="wrap-break-word text-xl font-semibold leading-snug text-slate-900 sm:text-2xl md:text-3xl">
-          {getQuestionText(question)}
-        </h2>
+        <div className="flex items-start justify-between gap-3">
+          <h2 className="wrap-break-word text-xl font-semibold leading-snug text-slate-900 sm:text-2xl md:text-3xl">
+            {questionText}
+          </h2>
+
+          {isSupported && questionText ? (
+            <button
+              type="button"
+              onClick={() => speak(questionText, questionLang)}
+              aria-label={`Listen to ${questionText}`}
+              className={`shrink-0 rounded-full p-2 text-xl transition-all hover:bg-slate-100 active:scale-90 ${
+                speakingText === questionText ? "animate-pulse bg-blue-50" : ""
+              }`}
+            >
+              🔊
+            </button>
+          ) : null}
+        </div>
+
         {question.word.pos ? (
           <span className="mt-2 inline-flex max-w-full rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-slate-600 sm:mt-3 sm:px-3 sm:text-xs">
             {question.word.pos}
           </span>
+        ) : null}
+        {question.word.definition ? (
+          <p className="ml-2 mt-2 text-xs font-bold text-slate-700 sm:text-base">
+            EX: {question.word.definition}
+          </p>
         ) : null}
       </div>
 

@@ -2,6 +2,7 @@ export type Word = {
   word: string;
   pos: string;
   meaning: string;
+  definition?: string;
 };
 
 export type QuizMode = "en-to-th" | "th-to-en";
