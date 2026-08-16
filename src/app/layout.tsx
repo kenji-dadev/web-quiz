@@ -1,11 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Noto_Sans_Thai, Plus_Jakarta_Sans } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
   subsets: ["latin"],
+});
+
+const notoThai = Noto_Sans_Thai({
+  variable: "--font-thai",
+  subsets: ["thai"],
 });
 
 const geistMono = Geist_Mono({
@@ -14,8 +19,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "English Vocabulary Quiz",
-  description: "Practice English vocabulary with simple quizzes.",
+  title: "English — Learn • Practice • Improve",
+  description: "Practice English vocabulary with quizzes and flash cards.",
 };
 
 export const viewport: Viewport = {
@@ -28,9 +33,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${jakarta.variable} ${notoThai.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-slate-100 font-sans text-slate-900">
+      <body className="min-h-full font-sans text-slate-800">
         <Suspense fallback={null}>{children}</Suspense>
       </body>
     </html>

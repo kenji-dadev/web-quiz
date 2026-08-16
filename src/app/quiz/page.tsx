@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import wordsData from "@/data/words.json";
 import QuizCard from "@/components/QuizCard";
 import QuizResult from "@/components/QuizResult";
+import Navbar from "@/components/Navbar";
+import FooterQuote from "@/components/FooterQuote";
 import { calculateScore, checkAnswer, generateQuiz } from "@/lib/quiz";
 import { getReviewWords, updateReviewWords } from "@/lib/reviewWords";
+import { addPoints } from "@/lib/userStats";
 import type { QuizMode, QuizQuestion, Word, WrongAnswer } from "@/types/word";
 
 const VALID_MODES: QuizMode[] = ["en-to-th", "th-to-en"];
@@ -55,7 +58,7 @@ export default function QuizPage() {
 
   if (quizQuestions === null) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-3 py-6 sm:px-6 sm:py-10 md:px-8 md:py-12">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-dashboard px-3 py-6">
         <p className="text-base font-medium text-slate-600 sm:text-lg">
           Preparing quiz...
         </p>
@@ -79,6 +82,7 @@ export default function QuizPage() {
 
     if (isCorrect) {
       setScore((prev) => prev + 1);
+      addPoints(10);
       return;
     }
 
@@ -100,6 +104,7 @@ export default function QuizPage() {
           wrongWords: wrongAnswers.map((item) => item.word),
         });
       }
+      addPoints(20);
       setQuizFinished(true);
       return;
     }
@@ -119,39 +124,47 @@ export default function QuizPage() {
     setQuizFinished(false);
   }
 
+  const pageWrapper = (content: ReactNode) => (
+    <div className="min-h-screen bg-dashboard">
+      <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8">
+        <Navbar />
+        <main className="mt-6 space-y-6 sm:mt-8">
+          {content}
+          <FooterQuote />
+        </main>
+      </div>
+    </div>
+  );
+
   if (totalQuestions === 0) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-3 py-6 sm:px-6 sm:py-10 md:px-8 md:py-12">
-        <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm sm:p-6 md:p-8">
-          <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">
-            No words available
-          </h1>
-          <p className="mt-3 text-sm text-slate-600 sm:text-base">
-            Add vocabulary to{" "}
-            <code className="text-sm">src/data/words.json</code> to start a quiz.
-          </p>
-          <button
-            type="button"
-            onClick={() => router.push("/")}
-            className="mt-6 min-h-11 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
-          >
-            Back to Home
-          </button>
-        </div>
+    return pageWrapper(
+      <div className="rounded-2xl bg-white p-6 text-center shadow-sm sm:p-8">
+        <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">
+          No words available
+        </h1>
+        <p className="mt-3 text-sm text-slate-600 sm:text-base">
+          Add vocabulary to{" "}
+          <code className="text-sm">src/data/words.json</code> to start a quiz.
+        </p>
+        <button
+          type="button"
+          onClick={() => router.push("/")}
+          className="mt-6 min-h-11 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
+        >
+          Back to Home
+        </button>
       </div>
     );
   }
 
   if (quizFinished) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-3 py-6 sm:px-6 sm:py-10 md:px-8 md:py-12">
-        <QuizResult
-          score={calculateScore(totalQuestions, wrongAnswers.length)}
-          totalQuestions={totalQuestions}
-          wrongAnswers={wrongAnswers}
-          onTryAgain={handleTryAgain}
-        />
-      </div>
+    return pageWrapper(
+      <QuizResult
+        score={calculateScore(totalQuestions, wrongAnswers.length)}
+        totalQuestions={totalQuestions}
+        wrongAnswers={wrongAnswers}
+        onTryAgain={handleTryAgain}
+      />
     );
   }
 
@@ -159,20 +172,18 @@ export default function QuizPage() {
     return null;
   }
 
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-3 py-6 sm:px-6 sm:py-10 md:px-8 md:py-12">
-      <QuizCard
-        question={activeQuestion}
-        currentIndex={currentQuestion}
-        totalQuestions={totalQuestions}
-        score={score}
-        answeredCount={answeredCount}
-        selectedAnswer={selectedAnswer}
-        showResult={showResult}
-        onSelectAnswer={handleSelectAnswer}
-        onNextQuestion={handleNextQuestion}
-        isLastQuestion={currentQuestion === totalQuestions - 1}
-      />
-    </div>
+  return pageWrapper(
+    <QuizCard
+      question={activeQuestion}
+      currentIndex={currentQuestion}
+      totalQuestions={totalQuestions}
+      score={score}
+      answeredCount={answeredCount}
+      selectedAnswer={selectedAnswer}
+      showResult={showResult}
+      onSelectAnswer={handleSelectAnswer}
+      onNextQuestion={handleNextQuestion}
+      isLastQuestion={currentQuestion === totalQuestions - 1}
+    />
   );
 }

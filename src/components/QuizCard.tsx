@@ -45,7 +45,7 @@ export default function QuizCard({
   const choiceLang = question.mode === "en-to-th" ? "th-TH" : "en-US";
 
   return (
-    <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:max-w-2xl sm:p-6 md:p-8">
+    <div className="w-full rounded-[28px] bg-white p-5 shadow-[0_12px_40px_-12px_rgba(59,130,246,0.18)] ring-1 ring-blue-100/80 sm:p-6 md:p-8">
       <QuizProgress
         currentQuestion={currentIndex + 1}
         totalQuestions={totalQuestions}

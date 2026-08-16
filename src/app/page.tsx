@@ -1,4 +1,8 @@
-import QuizSetup from "@/components/QuizSetup";
+import QuizPanel from "@/components/QuizPanel";
+import FlashCardPanel from "@/components/FlashCardPanel";
+import WelcomeHero from "@/components/WelcomeHero";
+import Navbar from "@/components/Navbar";
+import FooterQuote from "@/components/FooterQuote";
 import wordsData from "@/data/words.json";
 import type { Word } from "@/types/word";
 
@@ -6,22 +10,21 @@ export default function Home() {
   const words = wordsData as Word[];
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 px-3 py-6 sm:px-6 sm:py-10 md:px-8 md:py-12">
-      <main className="flex w-full max-w-lg flex-col items-center md:max-w-xl lg:max-w-2xl">
-        <div className="mb-6 text-center sm:mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
-            English Vocabulary Quiz
-          </h1>
-          <p className="mt-3 text-base text-slate-600 sm:mt-4 sm:text-lg md:text-xl">
-            Practice English vocabulary
-            <br className="hidden sm:block" />
-            <span className="sm:hidden"> </span>
-            with simple quizzes.
-          </p>
-        </div>
+    <div className="min-h-screen bg-dashboard">
+      <div className="mx-auto max-w-[1180px] px-4 py-6 sm:px-6 sm:py-8">
+        <Navbar />
 
-        <QuizSetup wordCount={words.length} />
-      </main>
+        <main className="mt-6 space-y-6 sm:mt-8">
+          <WelcomeHero />
+
+          <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
+            <QuizPanel wordCount={words.length} />
+            <FlashCardPanel words={words} />
+          </div>
+
+          <FooterQuote />
+        </main>
+      </div>
     </div>
   );
 }

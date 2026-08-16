@@ -19,7 +19,7 @@ export default function QuizResult({
     totalQuestions > 0 ? Math.round((score / totalQuestions) * 100) : 0;
 
   return (
-    <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:max-w-2xl sm:p-6 md:p-8">
+    <div className="w-full rounded-[28px] bg-white p-5 shadow-[0_12px_40px_-12px_rgba(59,130,246,0.18)] ring-1 ring-blue-100/80 sm:p-6 md:p-8">
       <div className="text-center">
         <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
           Quiz Complete!
